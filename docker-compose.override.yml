@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  bhosia.api:
+    container_name: bhosia.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__DefaultConnection=Server=bhosia.db;Database=BHOSIA;User Id=sa;Password=Your_password123;TrustServerCertificate=true;
+      - ConnectionStrings__RedisConnection=bhosia.redis:6379
+      - JWT__Secret=4B6F1D2A7E3C8B9A2E4F6A1C7D8F3A5D9E2B4C7F1A3D6B8F4A9E2C8D7A1F6B4D3A9F2E8C1B4A7D6F3E9A4B8F1C2D5
+      - JWT__Issuer=http://bhosia.api:8080/
+      - JWT__Audience=http://bhosia.api:8080/
+    ports:
+      - "6060:8080"
+      - "6061:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    depends_on:
+      - db
+      - redis
+
+  db:
+    container_name: bhosia.db
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "2433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  redis:
+    container_name: bhosia.redis
+    ports:
+      - "7379:6379"
+    restart: always

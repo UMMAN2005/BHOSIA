@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  bhosia.api:
+    image: ${DOCKER_REGISTRY-}bhosiaapi
+    build:
+      context: .
+      dockerfile: BHOSIA.API/Dockerfile
+
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+
+  redis:
+    image: "redis:latest"
+
+volumes:
+  mssql_data:
