@@ -1,6 +1,4 @@
-﻿using BHOSIA.DATA;
-using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Identity;
+﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MimeKit.Text;

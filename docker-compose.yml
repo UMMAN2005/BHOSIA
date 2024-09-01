@@ -2,7 +2,6 @@ version: '3.4'
 
 services:
   bhosia.api:
-    image: ${DOCKER_REGISTRY-}bhosiaapi
     build:
       context: .
       dockerfile: BHOSIA.API/Dockerfile
