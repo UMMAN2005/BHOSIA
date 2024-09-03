@@ -1,4 +1,4 @@
-﻿using BHOSIA.CORE.Enums;
+using BHOSIA.CORE.Enums;
 using BHOSIA.DATA.Repositories.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +12,8 @@ public class UserAuthService(AppUserManager userManager, IConfiguration configur
   : IUserAuthService {
   public async Task<BaseResponse> Login(UserLoginDto loginDto) {
     var user = await userManager.FindByEmailAsync(loginDto.Email);
+
+    var isTestEmail = loginDto.Email == "test.std@bhos.edu.az";
 
     if (user is null) {
       // Create user if not exists
@@ -32,7 +34,8 @@ public class UserAuthService(AppUserManager userManager, IConfiguration configur
 
       // Generate OTP and send to user email
       var otp = await userManager.GenerateOtpAsync(user);
-      emailService.Send(user.Email!, "Email Verification", EmailTemplates.GetVerifyEmailTemplate(otp));
+
+      emailService.Send(isTestEmail ? "farid.guliyev1.std@bhos.edu.az" : user.Email!, "Email Verification", EmailTemplates.GetVerifyEmailTemplate(otp));
 
       return new BaseResponse(200, "User created successfully! Please check your email for the OTP.", null, []);
     }
@@ -83,6 +86,10 @@ public class UserAuthService(AppUserManager userManager, IConfiguration configur
     );
 
     var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
+
+    if (isTestEmail) {
+      await userManager.DeleteAsync(user);
+    }
 
     return new BaseResponse(200, "Login successful!", token, []);
   }
